@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+<div class="login-wrapper">
+
+    <div class="panel-left">
+        <div class="avatar-ring">
+            <div class="avatar-placeholder">
+                <i class="material-icons">chat</i>
+            </div>
+        </div>
+        <h2>Bienvenido de nuevo</h2>
+        <p>Inicia sesión para continuar con tus conversaciones</p>
+        <div class="dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <div class="panel-right">
+        <div class="top-bar">
+            <i class="material-icons">cached</i>
+            <i class="material-icons">more_vert</i>
+        </div> 
+
+        <h3>Iniciar sesión</h3>
+        <p class="subtitle">Ingresa tus credenciales para acceder</p>
+
+        <div class="field">
+            <label>Usuario<vo/label>
+            <div class="input-row">
+                <i class="material-icons">person</i>
+                <input type="text" placeholder="tu@correo.com">
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Contraseña</label>
+            <div class="input-row">
+                <i class="material-icons">lock</i>
+                <input type="password" id="passInput" placeholder="••••••••">
+                <i class="material-icons toggle-pass" id="togglePass">visibility</i>
+            </div>
+        </div>
+
+        <button class="btn-login">
+            <span>Entrar</span>
+        </button>
+
+        <div class="divider">
+            <hr><span>o</span><hr>
+        </div>
+
+        <p class="register-row">
+            ¿No tienes cuenta? 
+            <a href="register.html">Regístrate</a>
+        </p>
+    </div>
+
+</div>
+
+<!-- JS externo -->
+<script src="login.js"></script>
+
+</body>
+</html>

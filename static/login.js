@@ -26,7 +26,7 @@ loginBtn.addEventListener('click', () => {
 
 socket.on('login_response', (data) => {
     if (data.success) {
-        alert("¡Bienvenido " + data.user + "!");
+        window.location.href = "/chat-plantilla";
     } else {
         alert("Error: " + data.message);
     }

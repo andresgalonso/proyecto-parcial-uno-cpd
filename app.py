@@ -1,11 +1,18 @@
-from flask import Flask, render_template, redirect
+import psycopg2
+from flask import Flask, render_template, redirect, request, jsonify
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-usuarios_registrados = ['gr63', '23aa', '81op', '1ln']
-usuarios_conectados = {}
+
+def get_conection():
+    return psycopg2.connect(
+        host="localhost",
+        database="wasap",
+        user="postgres",
+        password="marin1234"
+    )
 
 @app.route('/')
 def index():
@@ -13,6 +20,31 @@ def index():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "POST":
+        data = request.get_json() if request.is_json else request.form
+
+        nombre = data.get("nombre")
+        apellido = data.get("apellido")
+        correo_electronico = data.get("correo")
+        nombre_usuario = data.get("usuario")
+        contrasena = data.get("contrasena")
+        try:
+            connection = get_conection()
+            cursor = connection.cursor()
+            cursor.execute(
+          """
+                INSERT INTO usuarios (nombre, apellido, correo_electronico, nombre_usuario, contrasena) 
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                (nombre, apellido, correo_electronico, nombre_usuario, contrasena)
+            )
+            connection.commit()
+            cursor.close()
+            connection.close()
+            return jsonify({"success": True, "message": "Usuario registrado correctamente."})
+        except Exception as e:
+            return jsonify({"success": False, "message": f"Error al registrar: {str(e)}"})
+
     return render_template("register.html")
 
 @app.route("/login")
@@ -20,18 +52,35 @@ def login():
     return render_template("login.html")
 
 @app.route("/chat-plantilla")
-def login():
+def chat_plantilla():
     return render_template("chat-plantilla.html")
 
 @socketio.on('login')
 def handle_login(data):
-    username = data.get('username', '').lower().strip()
-    if username in usuarios_registrados:
-        usuarios_conectados[username] = True
-        emit('login_response', {'success': True, 'user': username})
-        emit('message', {'user': 'Sistema', 'msg': f'{username} se ha unido.'}, broadcast=True)
-    else:
-        emit('login_response', {'success': False, 'message': 'Usuario no registrado.'})
+    username = data.get('username', '').strip()
+    password = data.get('password', '')
+
+    try:
+        connection = get_conection()
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT nombre_usuario FROM usuarios WHERE nombre_usuario = %s AND contrasena = %s",
+            (username,password)
+        )
+        usuario_encontrado = cursor.fetchone()
+
+        cursor.close()
+        connection.close()
+
+        if usuario_encontrado:
+            nombre_db = usuario_encontrado[0]
+            emit('login_response', {'success': True, 'user': nombre_db})
+            emit('message', {'user': 'Sistema', 'msg': f'{nombre_db} se ha unido.'}, broadcast=True)
+        else:
+            emit('login_response', {'success': False, 'message': 'Usuario o contrasena incorrectos.'})
+
+    except Exception as e:
+        emit('login_response', {'success': False, 'message': f'Error de conexion: {str(e)}'})
 
 @socketio.on('send_message')
 def handle_message(data):

@@ -1,0 +1,11 @@
+CREATE DATABASE wasap;
+
+CREATE TABLE usuarios (
+	id SERIAL PRIMARY KEY,
+	nombre VARCHAR(100) NOT NULL,
+	apellido VARCHAR(100) NOT NULL,
+	correo_electronico VARCHAR(100) UNIQUE NOT NULL,
+	nombre_usuario VARCHAR(50) UNIQUE NOT NULL,
+	contrasena VARCHAR(50) NOT NULL,
+	fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -9,3 +9,27 @@ CREATE TABLE usuarios (
 	contrasena VARCHAR(50) NOT NULL,
 	fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE conversaciones (
+    id BIGSERIAL PRIMARY KEY,
+    tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('privado', 'grupo')),
+    nombre TEXT,
+    creado_por BIGINT REFERENCES usuarios(id) ON DELETE SET NULL,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE participantes_conversacion (
+    conversacion_id BIGINT REFERENCES conversaciones(id) ON DELETE CASCADE,
+    usuario_id BIGINT REFERENCES usuarios(id) ON DELETE CASCADE,
+    rol VARCHAR(10) DEFAULT 'miembro' CHECK (rol IN ('admin', 'miembro')),
+    unido_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (conversacion_id, usuario_id)
+);
+
+CREATE TABLE mensajes (
+    id BIGSERIAL PRIMARY KEY,
+    conversacion_id BIGINT REFERENCES conversaciones(id) ON DELETE CASCADE,
+    remitente_id BIGINT REFERENCES usuarios(id) ON DELETE SET NULL,
+    contenido TEXT NOT NULL,
+    enviado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

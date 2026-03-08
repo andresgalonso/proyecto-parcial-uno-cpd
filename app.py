@@ -1,9 +1,9 @@
 from logging import exception
-
 import psycopg2
 import threading
-from flask import Flask, render_template, redirect, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session
 from flask_socketio import SocketIO, emit
+
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -182,13 +182,13 @@ def process_message_db(remitente, destinatario, conversacion_id, contenido):
             conn = get_conection()
             with conn:
                 with conn.cursor() as cur:
-                    # 1. Remitente
+                    # Remitente
                     cur.execute("SELECT id FROM usuarios WHERE nombre_usuario = %s", (remitente,))
                     rem_row = cur.fetchone()
                     if not rem_row: return
                     rem_id = rem_row[0]
 
-                    # 2. Conversación
+                    #  Conversación
                     if not conversacion_id and destinatario:
                         cur.execute("SELECT id FROM usuarios WHERE nombre_usuario = %s", (destinatario,))
                         dest_row = cur.fetchone()
@@ -202,7 +202,7 @@ def process_message_db(remitente, destinatario, conversacion_id, contenido):
                             WHERE c.tipo = 'privado' AND p1.usuario_id = %s AND p2.usuario_id = %s
                         """, (rem_id, dest_id))
 
-                        conv = cur.fetchone()  # <--- CORREGIDO: con paréntesis
+                        conv = cur.fetchone()
 
                         if conv:
                             conversacion_id = conv[0]
@@ -216,14 +216,14 @@ def process_message_db(remitente, destinatario, conversacion_id, contenido):
 
                     if not conversacion_id: return
 
-                    # 3. ¡EL PASO QUE FALTABA! Insertar el mensaje
+
                     cur.execute("""
                         INSERT INTO mensajes (conversacion_id, remitente_id, contenido)
                         VALUES (%s, %s, %s) RETURNING enviado_en
                     """, (conversacion_id, rem_id, contenido))
                     fecha = cur.fetchone()[0]
 
-        # 4. Emitir
+        #  Emitir
         socketio.emit('nuevo_mensaje', {
             'conversacion_id': conversacion_id,
             'usuario': remitente,
@@ -265,11 +265,11 @@ def handle_agregar_contacto(data):
     try:
         with get_conection() as conn:
             with conn.cursor() as cur:
-                # 1. Obtener mi ID
+                # Obtener mi ID
                 cur.execute("SELECT id FROM usuarios WHERE nombre_usuario = %s", (mi_usuario,))
                 mi_id = cur.fetchone()[0]
 
-                # 2. Obtener el ID del amigo a agregar
+                # Obtener el ID del  a agregar
                 cur.execute("SELECT id FROM usuarios WHERE nombre_usuario = %s", (nuevo_contacto,))
                 amigo_row = cur.fetchone()
 
@@ -282,7 +282,7 @@ def handle_agregar_contacto(data):
                     emit('respuesta_contacto', {'success': False, 'message': 'No puedes agregarte a ti mismo.'})
                     return
 
-                # 3. Validar si ya lo tengo agregado
+                # Validar si ya lo tengo agregado
                 cur.execute("SELECT 1 FROM contactos WHERE usuario_id = %s AND contacto_id = %s", (mi_id, amigo_id))
                 if cur.fetchone():
                     emit('respuesta_contacto',
@@ -302,13 +302,13 @@ def handle_crear_grupo(data):
     nombre_grupo = data.get('nombre_grupo')
     miembros_str = data.get('miembros', '')
 
-    # Convertimos la cadena "juan, maria" en una lista limpia ['juan', 'maria']
+
     nombres_miembros = [n.strip() for n in miembros_str.split(',') if n.strip()]
-    nombres_miembros.append(creador)  # Nos aseguramos de que el creador esté en el grupo
-    nombres_miembros = list(set(nombres_miembros))  # Eliminamos duplicados por si acaso
+    nombres_miembros.append(creador)
+    nombres_miembros = list(set(nombres_miembros))
 
     try:
-        # Usamos el Lock para evitar Race Conditions (¡Requisito del proyecto!)
+
         with db_lock:
             conn = get_conection()
             with conn:
@@ -335,8 +335,6 @@ def handle_crear_grupo(data):
                                 INSERT INTO participantes_conversacion (conversacion_id, usuario_id, rol)
                                 VALUES (%s, %s, %s)
                             """, (grupo_id, u_id, rol))
-
-        # Avisamos al cliente que todo salió bien
         emit('respuesta_grupo', {'success': True, 'message': f'El grupo "{nombre_grupo}" ha sido creado.'})
 
     except Exception as e:

@@ -6,17 +6,12 @@
     <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- CSS -->
+
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-    
+
 </head>
-
-
 
 <body>
 
@@ -41,13 +36,13 @@
         <div class="top-bar">
             <i class="material-icons">cached</i>
             <i class="material-icons">more_vert</i>
-        </div> 
+        </div>
 
         <h3>Iniciar sesión</h3>
         <p class="subtitle">Ingresa tus credenciales para acceder</p>
 
         <div class="field">
-            <label>Usuario<vo/label>
+            <label>Usuario</label>
             <div class="input-row">
                 <i class="material-icons">person</i>
                 <input type="text" placeholder="usuario" id="userInput">
@@ -72,13 +67,12 @@
         </div>
 
         <p class="register-row">
-            <a href= "{{ url_for('register') }}" class="boton-estilizado">¿No tienes cuenta?</a>
+            <a href="{{ url_for('register') }}" class="boton-estilizado">¿No tienes cuenta?</a>
         </p>
     </div>
 
 </div>
 
-<!-- JS externo -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script src="{{ url_for('static', filename='login.js') }}"></script>
 </body>

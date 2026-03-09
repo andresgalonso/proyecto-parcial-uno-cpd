@@ -13,7 +13,6 @@
 Se desarrolló una aplicación de mensajería web desarrollada con Flask y SocketIO. Permite a usuarios registrados comunicarse en tiempo real mediante chats privados y grupos. El sistema consta de dos componentes principales:
 
 - **Aplicación Web (`app.py`):** Consta de un servidor Flask con soporte para Socket.IO que gestiona las diferentes funcionalidades.
--  **Servidor (`server.py` / `client.py`):** Implementación de un servidor de chat mediante TCP puros.
 
 Cada vez que un cliente se conecta, el servidor le asigna un contexto de ejecución independiente. Esto permite que el servidor atienda múltiples conexiones simultáneamente sin que una bloquee a la otra.
 
@@ -102,20 +101,6 @@ Se utilizó WebSockets, que es un protocolo de capa de aplicación que mantiene 
 | `respuesta_contacto` | `{ success, message }` | Resultado de agregar un contacto |
 | `respuesta_grupo` | `{ success, message }` | Resultado de crear un grupo |
 
-## Servidor TCP 
-El proyecto incluye una implementación alternativa de servidor de chat usando sockets TCP puros de Python. El archivo `server.py` es un servidor TCP de chat. 
-**Características:**
-- Escucha en `127.0.0.1:5000`.
-- Autenticación al conectar: el servidor responde `AUTH_OK` o `AUTH_FAILED`.
-- Broadcast de mensajes a todos los clientes conectados excepto el emisor.
-- Manejo de desconexiones mediante `try/except`.
-- Cada cliente es atendido en su propio `Thread`.
-
-Por otro lado, `client.py` es el cliente TCP para conectarse al servidor TCP.
-**Características:**
-- Solicita nombre de usuario al iniciar.
-- Lanza un hilo para recepción y otro para envío de mensajes.
-- Maneja la respuesta de autenticación del servidor.
 
 ## Concurrencia
 

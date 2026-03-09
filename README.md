@@ -1,5 +1,13 @@
 # Proyecto paracial uno 
 ---
+##Integrantes
+
+Emiliano Piñon Marín 367860
+Luisa Fernanda Hernández Hernández 368068
+Andrés Gonzales Alonso 367600
+Mauricio Elías Navarrete Flores 367785
+
+---
 ## Tabla de contenidos
 1. [Descripción General](#descripción-general)
 2. [Arquitectura del Sistema](#arquitectura-del-sistema)
